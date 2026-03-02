@@ -1,0 +1,267 @@
+{
+    "businessObjectives": [
+        {
+            "id": "2:8",
+            "type": "OBJECTIVE",
+            "title": "Clarifier et challenger les zones d’ombre pendant les ateliers d’impact mapping",
+            "children": [
+                {
+                    "id": "2:9",
+                    "type": "ACTOR",
+                    "title": "Product Owner",
+                    "children": [
+                        {
+                            "id": "2:31",
+                            "type": "IMPACT",
+                            "title": "Identifier et rendre explicites les zones de flou grâce à l’IA  pendant l’atelier",
+                            "children": [
+                                {
+                                    "id": "2:11",
+                                    "type": "ACTION",
+                                    "title": "Analyser l’impact mapping, le user story mapping et l’example mapping dans leur globalité",
+                                    "children": [],
+                                    "parentId": "2:31"
+                                },
+                                {
+                                    "id": "2:654",
+                                    "type": "ACTION",
+                                    "title": "Détecter les incohérences entre objectifs métiers, impacts, actions et user stories",
+                                    "children": [],
+                                    "parentId": "2:31"
+                                },
+                                {
+                                    "id": "2:662",
+                                    "type": "ACTION",
+                                    "title": "Challenger la formulation des user stories",
+                                    "children": [],
+                                    "parentId": "2:31"
+                                },
+                                {
+                                    "id": "2:678",
+                                    "type": "ACTION",
+                                    "title": "Évaluer la couverture des exemples (Given / When / Then) pour chaque règle",
+                                    "children": [],
+                                    "parentId": "2:31"
+                                },
+                                {
+                                    "id": "2:686",
+                                    "type": "ACTION",
+                                    "title": "Mettre en évidence les règles sans scénarios ou insuffisamment couvertes",
+                                    "children": [],
+                                    "parentId": "2:31"
+                                },
+                                {
+                                    "id": "2:735",
+                                    "type": "ACTION",
+                                    "title": "Faire émerger des questions métier à traiter pendant l’atelier",
+                                    "children": [],
+                                    "parentId": "2:31"
+                                },
+                                {
+                                    "id": "2:743",
+                                    "type": "ACTION",
+                                    "title": "Restituer les zones de flou directement dans FigJam (feedback, annotations, stickies)",
+                                    "children": [],
+                                    "parentId": "2:31"
+                                }
+                            ],
+                            "parentId": "2:9"
+                        }
+                    ],
+                    "parentId": "2:8"
+                }
+            ]
+        },
+        {
+            "id": "2:786",
+            "type": "OBJECTIVE",
+            "title": "Préparer un backlog GitHub clair et actionnable pour le sprint",
+            "children": [
+                {
+                    "id": "2:787",
+                    "type": "ACTOR",
+                    "title": "Product Owner",
+                    "children": [
+                        {
+                            "id": "2:790",
+                            "type": "IMPACT",
+                            "title": "Transformer un atelier FigJam validé en backlog GitHub sans ressaisie",
+                            "children": [
+                                {
+                                    "id": "2:789",
+                                    "type": "ACTION",
+                                    "title": "Analyser les éléments du backbone (objectifs, acteurs, impacts, actions)",
+                                    "children": [
+                                        {
+                                            "id": "2:942",
+                                            "type": "USER_STORY",
+                                            "title": "Détecter les objectifs, acteurs, impacts, actions, user stories, règles et scénarios",
+                                            "children": [
+                                                {
+                                                    "id": "3:464",
+                                                    "type": "RULE",
+                                                    "title": "les items sont détectés par la couleur de fond du shape  :   \"OBJECTIVE\": \"#1E3A8A\",\n  \"ACTOR\": \"#7C3AED\",\n  \"IMPACT\": \"#16A34A\",\n  \"ACTION\": \"#EA580C\",\n  \"USER_STORY\": \"#FACC15\",\n  \"RULE\": \"#64748B\",\n  \"SCENARIO\": \"#CBD5E1\"",
+                                                    "children": [],
+                                                    "parentId": "2:942",
+                                                    "release": "MVP"
+                                                }
+                                            ],
+                                            "parentId": "2:789",
+                                            "release": "MVP"
+                                        },
+                                        {
+                                            "id": "3:289",
+                                            "type": "USER_STORY",
+                                            "title": "Analyser tous les éléments du figjam",
+                                            "children": [
+                                                {
+                                                    "id": "3:422",
+                                                    "type": "RULE",
+                                                    "title": "Un élément métier est un shape de type “square / rectangle” (FigJam shape avec fond).\nLes autres types (sticky, texte seul, image) sont ignorés.\nLe shape doit contenir au moins un texte non vide.",
+                                                    "children": [],
+                                                    "parentId": "3:289",
+                                                    "release": "MVP"
+                                                }
+                                            ],
+                                            "parentId": "2:789",
+                                            "release": "MVP"
+                                        }
+                                    ],
+                                    "parentId": "2:790"
+                                },
+                                {
+                                    "id": "2:793",
+                                    "type": "ACTION",
+                                    "title": "Reconstruire la hiérarchie stricte (1 parent par élément)",
+                                    "children": [
+                                        {
+                                            "id": "2:971",
+                                            "type": "USER_STORY",
+                                            "title": "Générer un JSON avec les items hierarchisées",
+                                            "children": [
+                                                {
+                                                    "id": "3:589",
+                                                    "type": "RULE",
+                                                    "title": "1 parent par élément\nobjective → actor → impact → action → user story → règle → scénario",
+                                                    "children": [
+                                                        {
+                                                            "id": "3:664",
+                                                            "type": "SCENARIO",
+                                                            "title": "Given un board FigJam contenant les shapes suivants :",
+                                                            "children": [],
+                                                            "parentId": "3:589",
+                                                            "release": "MVP",
+                                                            "text": "\n\nGiven un board FigJam contenant les shapes suivants :\nun shape rectangle\nid obj-1\nfill color = OBJECTIVE_COLOR\ntexte = Améliorer la qualité globale du delivery pendant les ateliers\nun shape rectangle\nid actor-1\nfill color = ACTOR_COLOR\ntexte = Product Owner\nun shape rectangle\nid impact-1\nfill color = IMPACT_COLOR\ntexte = Identifier et rendre explicites les zones de flou\nun shape rectangle\nid action-1\nfill color = ACTION_COLOR\ntexte = Challenger les user stories et règles pendant l’atelier\nun shape rectangle\nid story-1\nfill color = USER_STORY_COLOR\ntexte = En tant que Product Owner, je veux identifier les règles floues afin de clarifier les décisions produit\nun shape rectangle\nid rule-1\nfill color = RULE_COLOR\ntexte = Les règles métier doivent être explicites et testables\nun shape rectangle\nid scenario-1\nfill color = SCENARIO_COLOR\ntexte =\nSi une règle métier est ambiguë, elle doit être signalée et discutée pendant l’atelier afin de lever toute interprétation.\n\nun shape rectangle\nid scenario-2\nfill color = SCENARIO_COLOR\ntexte =\nSi plusieurs interprétations sont possibles pour une règle, le système doit générer une question de clarification.\n\nAnd les connectors directionnels suivants existent :\nobj-1 → actor-1\nactor-1 → impact-1\nimpact-1 → action-1\naction-1 → story-1\nstory-1 → rule-1\nrule-1 → scenario-1\nrule-1 → scenario-2\nAnd une Section FigJam existe :\nnom = MVP\n\nAnd le centre géométrique du shape story-1 est contenu dans la Section MVP\nWhen\n\nWhen le plugin analyse le board FigJam\n\nAnd détecte les types des shapes par leur fill color\n\nAnd reconstruit la hiérarchie à partir des connectors\n\nAnd assigne la release MVP à la User Story story-1\n\nAnd propage la release MVP aux éléments enfants (rule-1, scenario-1, scenario-2)\nThen\n\nThen le plugin produit la hiérarchie JSON suivante :\n{ \"businessObjectives\": [ { \"id\": \"obj-1\", \"type\": \"OBJECTIVE\", \"title\": \"Améliorer la qualité globale du delivery pendant les ateliers\", \"children\": [ { \"id\": \"actor-1\", \"type\": \"ACTOR\", \"title\": \"Product Owner\", \"parentId\": \"obj-1\", \"children\": [ { \"id\": \"impact-1\", \"type\": \"IMPACT\", \"title\": \"Identifier et rendre explicites les zones de flou\", \"parentId\": \"actor-1\", \"children\": [ { \"id\": \"action-1\", \"type\": \"ACTION\", \"title\": \"Challenger les user stories et règles pendant l’atelier\", \"parentId\": \"impact-1\", \"children\": [ { \"id\": \"story-1\", \"type\": \"USER_STORY\", \"title\": \"En tant que Product Owner, je veux identifier les règles floues afin de clarifier les décisions produit\", \"parentId\": \"action-1\", \"release\": \"MVP\", \"children\": [ { \"id\": \"rule-1\", \"type\": \"RULE\", \"title\": \"Les règles métier doivent être explicites et testables\", \"parentId\": \"story-1\", \"release\": \"MVP\", \"children\": [ { \"id\": \"scenario-1\", \"type\": \"SCENARIO\", \"title\": \"Cas nominal\", \"parentId\": \"rule-1\", \"release\": \"MVP\", \"text\": \"Si une règle métier est ambiguë, elle doit être signalée et discutée pendant l’atelier afin de lever toute interprétation.\" }, { \"id\": \"scenario-2\", \"type\": \"SCENARIO\", \"title\": \"Cas limite\", \"parentId\": \"rule-1\", \"release\": \"MVP\", \"text\": \"Si plusieurs interprétations sont possibles pour une règle, le système doit générer une question de clarification.\" } ] } ] } ] } ] } ] } ] } ] }\nSi tu veux, je peux maintenant :\nécrire les scénarios d’erreur (missing section, mauvais parent, couleur inconnue),\nou transformer ce Gherkin en tests automatisés (ex: Jest / Cucumber)."
+                                                        }
+                                                    ],
+                                                    "parentId": "2:971",
+                                                    "release": "MVP"
+                                                }
+                                            ],
+                                            "parentId": "2:793",
+                                            "release": "MVP"
+                                        }
+                                    ],
+                                    "parentId": "2:790"
+                                },
+                                {
+                                    "id": "2:795",
+                                    "type": "ACTION",
+                                    "title": "Créer une GitHub issue par élément FigJam",
+                                    "children": [],
+                                    "parentId": "2:790"
+                                },
+                                {
+                                    "id": "2:797",
+                                    "type": "ACTION",
+                                    "title": "Conserver la hiérarchie parent → enfant dans GitHub",
+                                    "children": [],
+                                    "parentId": "2:790"
+                                },
+                                {
+                                    "id": "2:799",
+                                    "type": "ACTION",
+                                    "title": "Ajouter toutes les issues au GitHub Project",
+                                    "children": [],
+                                    "parentId": "2:790"
+                                },
+                                {
+                                    "id": "2:801",
+                                    "type": "ACTION",
+                                    "title": "Positionner chaque issue dans la colonne correspondant à son type (Objective, Actor, Impact, Action, Story, Rule, Scenario)",
+                                    "children": [],
+                                    "parentId": "2:790"
+                                },
+                                {
+                                    "id": "2:803",
+                                    "type": "ACTION",
+                                    "title": "Associer les user stories, règles et scénarios à la bonne release",
+                                    "children": [],
+                                    "parentId": "2:790"
+                                },
+                                {
+                                    "id": "2:805",
+                                    "type": "ACTION",
+                                    "title": "Éviter les doublons lors des synchronisations successives",
+                                    "children": [],
+                                    "parentId": "2:790"
+                                },
+                                {
+                                    "id": "2:916",
+                                    "type": "ACTION",
+                                    "title": "Mettre à jour les issues existantes si l’atelier évolue",
+                                    "children": [],
+                                    "parentId": "2:790"
+                                },
+                                {
+                                    "id": "3:206",
+                                    "type": "ACTION",
+                                    "title": "Analyser les éléments priorisés (user stories, règles, scénarios)",
+                                    "children": [
+                                        {
+                                            "id": "3:208",
+                                            "type": "USER_STORY",
+                                            "title": "Détecter les sections de releases",
+                                            "children": [
+                                                {
+                                                    "id": "3:542",
+                                                    "type": "RULE",
+                                                    "title": "les releases sont détectés grâce aux sections\nLa section doit avoir un nom non vide.\nSection.name est utilisé comme identifiant de release.",
+                                                    "children": [],
+                                                    "parentId": "3:208",
+                                                    "release": "MVP"
+                                                }
+                                            ],
+                                            "parentId": "3:206",
+                                            "release": "MVP"
+                                        },
+                                        {
+                                            "id": "3:325",
+                                            "type": "USER_STORY",
+                                            "title": "Détecter les user stories, règles, scénarios priorisées sur la release",
+                                            "children": [
+                                                {
+                                                    "id": "3:482",
+                                                    "type": "RULE",
+                                                    "title": "les items sont détectés par la couleur de fond du shape \n  \"USER_STORY\": \"#FACC15\",\n  \"RULE\": \"#64748B\",\n  \"SCENARIO\": \"#CBD5E1\"",
+                                                    "children": [],
+                                                    "parentId": "3:325",
+                                                    "release": "MVP"
+                                                }
+                                            ],
+                                            "parentId": "3:206",
+                                            "release": "MVP"
+                                        }
+                                    ],
+                                    "parentId": "2:790"
+                                }
+                            ],
+                            "parentId": "2:787"
+                        }
+                    ],
+                    "parentId": "2:786"
+                }
+            ]
+        }
+    ]
+}

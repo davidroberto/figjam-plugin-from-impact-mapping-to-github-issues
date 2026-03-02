@@ -1,0 +1,11 @@
+{
+  "name": "Impact Mapping to GitHub Issues",
+  "id": "impact-mapping-to-github-issues",
+  "api": "1.0.0",
+  "main": "dist/code.js",
+  "capabilities": [],
+  "enableProposedApi": false,
+  "editorType": [
+    "figjam"
+  ]
+}
