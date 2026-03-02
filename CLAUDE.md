@@ -46,49 +46,33 @@ npm run test:watch     # vitest (watch mode)
 
 ### Principe clé
 
-Séparer la logique métier pure (TypeScript) de l'API FigJam (infrastructure). L'API Figma est un adaptateur, jamais importée dans le domaine.
+Séparer la logique métier pure (TypeScript) de l'API FigJam (infrastructure). L'API Figma est un adaptateur, jamais importée dans le domaine. Le domaine est modélisé en DDD avec des entités riches, value objects et un aggregate root.
 
 ### Structure des fichiers
 
 ```
 src/
-├── plugin.ts                              # Entry point (orchestre les use cases)
+├── plugin.ts                              # Entry point (orchestre le use case unique)
 ├── modules/
 │   ├── boardAnalysis/
-│   │   ├── elementType.ts                 # Enum des types
-│   │   ├── colorMapping.ts                # Hex color <-> ElementType + figmaColorConverter
-│   │   ├── boardElement.ts                # Entité BoardElement
-│   │   ├── rawTypes.ts                    # RawBoardShape, RawConnector, RawSection (value objects)
-│   │   ├── analyzeBoardElements/
-│   │   │   ├── analyzeBoardElements.useCase.ts
-│   │   │   ├── analyzeBoardElements.boardReader.ts    # Port (interface)
-│   │   │   ├── analyzeBoardElements.figmaBoardReader.ts  # Adaptateur Figma
-│   │   │   └── test/
-│   │   │       ├── analyzeBoardElements.dsl.ts
-│   │   │       ├── analyzeBoardElements.inMemoryBoardReader.ts
-│   │   │       └── usecase/
-│   │   │           ├── analyzeBoardElements.useCase.spec.ts
-│   │   │           └── analyzeBoardElements.useCaseDriver.ts
-│   │   ├── detectReleases/
-│   │   │   ├── detectReleases.useCase.ts
-│   │   │   ├── detectReleases.sectionReader.ts        # Port (interface)
-│   │   │   ├── detectReleases.figmaSectionReader.ts   # Adaptateur Figma
-│   │   │   └── test/
-│   │   │       ├── detectReleases.dsl.ts
-│   │   │       ├── detectReleases.inMemorySectionReader.ts
-│   │   │       └── usecase/
-│   │   │           ├── detectReleases.useCase.spec.ts
-│   │   │           └── detectReleases.useCaseDriver.ts
-│   │   └── buildHierarchy/
-│   │       ├── buildHierarchy.useCase.ts
-│   │       ├── buildHierarchy.connectorReader.ts      # Port (interface)
-│   │       ├── buildHierarchy.figmaConnectorReader.ts # Adaptateur Figma
-│   │       ├── hierarchyNode.ts                       # Entité HierarchyNode (arbre)
+│   │   ├── elementType.ts                 # Enum des types (enum seulement)
+│   │   ├── elementColor.ts                # Value object (color mapping + RGB→hex)
+│   │   ├── shapeBounds.ts                 # Value object (bounds + containment géométrique)
+│   │   ├── boardElement.ts                # Entité riche (hierarchy, release, title, validation)
+│   │   ├── releaseSection.ts              # Value object (section + validité + containment)
+│   │   ├── hierarchyNode.ts               # Entité (tree node + propagation release)
+│   │   ├── impactMap.ts                   # Aggregate root (assignReleases + buildHierarchy)
+│   │   ├── rawTypes.ts                    # RawBoardShape, RawConnector, RawSection (DTOs)
+│   │   └── analyzeImpactMap/
+│   │       ├── analyzeImpactMap.useCase.ts           # Use case unique — orchestrateur fin
+│   │       ├── analyzeImpactMap.boardReader.ts       # Port unique (interface)
+│   │       ├── analyzeImpactMap.figmaBoardReader.ts  # Adaptateur Figma unique
 │   │       └── test/
-│   │           ├── buildHierarchy.dsl.ts
+│   │           ├── analyzeImpactMap.dsl.ts
+│   │           ├── analyzeImpactMap.inMemoryBoardReader.ts
 │   │           └── usecase/
-│   │               ├── buildHierarchy.useCase.spec.ts
-│   │               └── buildHierarchy.useCaseDriver.ts
+│   │               ├── analyzeImpactMap.useCase.spec.ts
+│   │               └── analyzeImpactMap.useCaseDriver.ts
 │   └── shared/
 │       └── result/
 │           └── commandResult.ts                       # CommandResult<E>
@@ -102,17 +86,25 @@ Pas de framework DI — les use cases sont des classes pures, injectées via con
 
 ## Principes d'architecture
 
-### Clean Architecture / Ports & Adapters
+### DDD / Clean Architecture / Ports & Adapters
 
-- **Entités** : classes avec `private constructor` + factory `static create()`. Pas de logique d'infra.
-- **Use Cases** : une classe par cas d'usage, méthode `execute()` retourne `CommandResult<E>`.
-- **Ports** : interfaces TypeScript (boardReader, sectionReader, connectorReader).
-- **Adapters** : implémentations concrètes (figmaXxxReader pour la prod, inMemoryXxxReader pour les tests).
+- **Value Objects** : `ElementColor`, `ShapeBounds`, `ReleaseSection` — classes avec `private constructor` + factory statique. Logique métier encapsulée.
+- **Entités** : `BoardElement` (riche, avec hierarchy level, validation, release, bounds), `HierarchyNode` (arbre + propagation release). Classes avec `private constructor` + factory.
+- **Aggregate Root** : `ImpactMap` — orchestre `assignReleases()` et `buildHierarchy()`. Point d'entrée unique pour la logique métier.
+- **Use Case** : `AnalyzeImpactMapUseCase` — orchestrateur fin, lit les données brutes, crée les objets domaine, assemble l'aggregate.
+- **Port** : `AnalyzeImpactMapBoardReader` — interface unique pour lire toutes les données du board.
+- **Adapter** : `AnalyzeImpactMapFigmaBoardReader` (prod), `AnalyzeImpactMapInMemoryBoardReader` (tests).
 
-### Result pattern
+### Logique métier dans le domaine
 
-- `CommandResult<E>` avec `private constructor` + factories `success(value?)`/`failure(error)`.
-- Le type d'erreur `E` est `never` tant qu'aucun scénario d'erreur n'est testé.
+- La hiérarchie (parent-child validation) vit dans `BoardElement.isDirectParentOf()`
+- Le containment géométrique vit dans `ShapeBounds.isContainedIn()`
+- La propagation des releases vit dans `HierarchyNode.propagateRelease()`
+- L'assignation des releases vit dans `ImpactMap.assignReleases()`
+- La construction de l'arbre vit dans `ImpactMap.buildHierarchy()`
+- Le mapping couleur → type vit dans `ElementColor.toElementType()`
+- La validation des shapes vit dans `BoardElement.isValidShape()`
+- L'extraction du titre scénario vit dans `BoardElement.title` (getter)
 
 ---
 
@@ -128,12 +120,16 @@ Pas de framework DI — les use cases sont des classes pures, injectées via con
 | Adaptateur In-Memory | `{feature}.inMemory{PortName}.ts` |
 | DSL test | `{feature}.dsl.ts` |
 | Entité domaine | `{entity}.ts` |
+| Value object | `{valueObject}.ts` |
+| Aggregate root | `{aggregate}.ts` |
 
 ### Tests — Pattern DSL / Driver / Spec
 
 | Niveau | Fichiers | Environnement |
 |--------|----------|---------------|
 | **Unit (use case)** | `test/usecase/{feature}.useCase.spec.ts` + `useCaseDriver.ts` | In-memory, pas d'IO |
+
+**Pas de tests unitaires pour le domaine** — toute la logique domaine est couverte indirectement par les tests de use case.
 
 **DSL** : une interface par scénario dans `test/{feature}.dsl.ts`.
 
@@ -182,28 +178,31 @@ test('nom du scénario', async () => {
 
 `OBJECTIVE → ACTOR → IMPACT → ACTION → USER_STORY → RULE → SCENARIO`
 
-Un connecteur est valide seulement si le type parent est exactement un niveau au-dessus du type enfant.
+Un connecteur est valide seulement si le type parent est exactement un niveau au-dessus du type enfant. Validé par `BoardElement.isDirectParentOf()`.
 
 ### Shapes valides
 
 - `ShapeWithTextNode` avec `shapeType` = `SQUARE` ou `ROUNDED_RECTANGLE`
 - Texte non vide obligatoire
+- Couleur connue obligatoire
+- Validé par `BoardElement.isValidShape()`
 
 ### Couleurs Figma
 
-- Stockées en float 0-1 (`{ r, g, b }`). Conversion : `Math.round(r * 255)` → hex.
+- Stockées en float 0-1 (`{ r, g, b }`). Conversion via `ElementColor.fromRgb()`.
 - Comparaison en uppercase.
 
 ### Sections / Releases
 
-- Les releases sont des `SectionNode` FigJam
-- Section avec nom non vide = release
-- Containment : centre du shape `(x + width/2, y + height/2)` dans les bounds de la section
+- Les releases sont des `SectionNode` FigJam, modélisées par `ReleaseSection`
+- Section avec nom non vide = release valide (`ReleaseSection.isValid`)
+- Containment : centre du shape dans les bounds de la section (`ShapeBounds.isContainedIn()`)
 
 ### Propagation des releases
 
 - Une user story dans une section reçoit la release
 - Ses enfants (rules, scenarios) héritent de la release du parent
+- Propagation via `HierarchyNode.propagateRelease()`
 
 ---
 
